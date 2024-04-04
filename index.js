@@ -101,3 +101,20 @@ app.get("/videos/:movieId", async (req, res) => {
     res.json(error);
   }
 });
+
+app.get("/similar/:movieId", async (req, res) => {
+  try {
+    const params = new URLSearchParams({
+      api_key: API_KEY,
+    });
+
+    const response = await fetch(
+      `${API_URL}movie/${req.params.movieId}/similar?${params}`
+    );
+    const data = await response.json();
+
+    res.json(data);
+  } catch (error) {
+    res.json(error);
+  }
+});
