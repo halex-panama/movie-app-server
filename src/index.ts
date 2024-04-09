@@ -1,7 +1,7 @@
-const express = require("express");
-const cors = require("cors");
-const url = require("url");
-require("dotenv").config();
+import express from "express";
+import cors from "cors";
+import url from "url";
+import "dotenv/config";
 
 const PORT = process.env.PORT || 8000;
 const API_KEY = process.env.API_KEY;
@@ -12,7 +12,7 @@ app.use(cors());
 
 app.listen(PORT, () => console.log(`Server listening to PORT ${PORT}`));
 
-app.get("/", async (req, res) => {
+app.get("/", async (_, res) => {
   res.json("succes");
 });
 
