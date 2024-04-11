@@ -16,88 +16,53 @@ const express_1 = __importDefault(require("express"));
 const cors_1 = __importDefault(require("cors"));
 const url_1 = __importDefault(require("url"));
 require("dotenv/config");
+// import axios from "axios";
 const PORT = process.env.PORT || 8000;
 const API_KEY = process.env.API_KEY;
 const API_URL = "https://api.themoviedb.org/3/";
 const app = (0, express_1.default)();
 app.use((0, cors_1.default)());
 app.listen(PORT, () => console.log(`Server listening to PORT ${PORT}`));
-app.get("/", (_, res) => __awaiter(void 0, void 0, void 0, function* () {
-    res.json("succes");
-}));
+// Function to handle API requests to TMDb
+function tmdbRequest(endpoint, req, res) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            const params = new URLSearchParams(Object.assign({ api_key: API_KEY, language: "en-US" }, url_1.default.parse(req.url, true).query));
+            // Construct the URL for the request
+            const apiUrl = `${API_URL}${endpoint}?${params.toString()}`;
+            // Make the request using Axios
+            // const { data } = await axios.get(apiUrl);
+            // Make the request using Fetch
+            const data = yield (yield fetch(apiUrl)).json();
+            res.json(data);
+        }
+        catch (error) {
+            res.json(error);
+        }
+    });
+}
+// Route for retrieving popular movies
 app.get("/popular", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const params = new URLSearchParams(Object.assign({ api_key: API_KEY, language: "en-US" }, url_1.default.parse(req.url, true).query));
-        const response = yield fetch(`${API_URL}movie/popular?${params}`);
-        const data = yield response.json();
-        res.json(data);
-    }
-    catch (error) {
-        res.json(error);
-    }
+    yield tmdbRequest("movie/popular", req, res);
 }));
+// Route for searching movies
 app.get("/search", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const params = new URLSearchParams(Object.assign({ api_key: API_KEY, language: "en-US" }, url_1.default.parse(req.url, true).query));
-        const response = yield fetch(`
-    ${API_URL}search/movie?${params}`);
-        const data = yield response.json();
-        res.json(data);
-    }
-    catch (error) {
-        res.json(error);
-    }
+    yield tmdbRequest("search/movie", req, res);
 }));
+// Route for retrieving movie information
 app.get("/info/:movieId", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const params = new URLSearchParams({
-            api_key: API_KEY,
-        });
-        const response = yield fetch(`${API_URL}movie/${req.params.movieId}?${params}`);
-        const data = yield response.json();
-        res.json(data);
-    }
-    catch (error) {
-        res.json(error);
-    }
+    yield tmdbRequest(`movie/${req.params.movieId}`, req, res);
 }));
+// Route for retrieving movie credits
 app.get("/credits/:movieId", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const params = new URLSearchParams({
-            api_key: API_KEY,
-        });
-        const response = yield fetch(`${API_URL}movie/${req.params.movieId}/credits?${params}`);
-        const data = yield response.json();
-        res.json(data);
-    }
-    catch (error) {
-        res.json(error);
-    }
+    yield tmdbRequest(`movie/${req.params.movieId}/credits`, req, res);
 }));
+// Route for retrieving movie videos
 app.get("/videos/:movieId", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const params = new URLSearchParams({
-            api_key: API_KEY,
-        });
-        const response = yield fetch(`${API_URL}movie/${req.params.movieId}/videos?${params}`);
-        const data = yield response.json();
-        res.json(data);
-    }
-    catch (error) {
-        res.json(error);
-    }
+    yield tmdbRequest(`movie/${req.params.movieId}/videos`, req, res);
 }));
+// Route for retrieving similar movies
 app.get("/similar/:movieId", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const params = new URLSearchParams({
-            api_key: API_KEY,
-        });
-        const response = yield fetch(`${API_URL}movie/${req.params.movieId}/similar?${params}`);
-        const data = yield response.json();
-        res.json(data);
-    }
-    catch (error) {
-        res.json(error);
-    }
+    yield tmdbRequest(`movie/${req.params.movieId}/similar`, req, res);
 }));
 //# sourceMappingURL=index.js.map
